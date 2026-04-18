@@ -6,8 +6,8 @@
 
 📂 Project Architecture: The project follows a modular structure to ensure scalability and ease of maintenance. You can view the logic flow and folder structure here:🔗 System Flowchart
 
-⚙️ Getting StartedClone the repo:git clone https://github.com/bhavya654/LEO_Shows-Ticketing-System.git
-
+⚙️ Getting Started
+Clone the repo: https://github.com/bhavya654/LEO_Shows-Ticketing-System.git
 Install dependencies:
 For the backend: cd backend && npm install
 For the frontend: cd frontend && npm install
