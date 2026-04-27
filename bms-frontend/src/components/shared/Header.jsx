@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaSearch, FaUser } from 'react-icons/fa'
-import mainLogo from '../../assets/main-icon.png'
+import mainLogo from '../../assets/Leo Shows.png'
 import { useLocation } from '../../context/LocationContext';
 import map from "../../assets/pin.gif"
 
@@ -18,7 +18,7 @@ const Header = () => {
             <img
               src={mainLogo}
               alt="logo"
-              className="h-8 object-contain"
+              className="h-13 object-contain"
             />
             <div className="relative">
               <input
@@ -31,29 +31,29 @@ const Header = () => {
           </div>
           {/* Right Part */}
           <div className="flex item-center space-x-6">
-            <div className="text-sm font-medium cursor-pointer border rounded-full border-gray-300 p-2">
-               {!location && <img src={map} alt='loading..'className='w-10 h-10'/>}
+            <div className="text-sm font-medium cursor-pointer border rounded-full border-[#88856E] p-2">
+               {!location && <img src={map} alt='loading..'className='w-5 h-5'/>}
                {location && <p>{location} &nbsp; ▼</p> }
             </div>
-            <span className="cursor-pointer text-sm font-medium border rounded-full border-gray-300 p-2">
-              <FaUser className="text-gray-500" />
+            <span className="cursor-pointer text-sm font-medium border rounded-full border-[#88856E] p-2">
+              <FaUser className="text-[#88856E" />
             </span>
-            <button className="bg-[#f84464] text-white px-4 py-1.5 rounded text-sm">
+            <button className="bg-orange-500 text-white px-4 py-1.5 rounded text-sm hover:bg-[#F8AF26]/90 transition duration-200 font-medium">
               Sign in
             </button>
           </div>
         </div>
       </div>
       {/* Bottom Navbar */}
-      <div className="bg-[#f2f2f2] px-4 md:px-8">
-        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-2 text-gray-700">
+      <div className="bg-[#E9ECEF] px-4 md:px-8">
+        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-2 text-[#333333]">
           <div className="flex items-center space-x-6 font-medium">
-            <span className="hover:text-red-500">Movies</span>
-            <span className="hover:text-red-500">Stream</span>
-            <span className="hover:text-red-500">Events</span>
-            <span className="hover:text-red-500">Plays</span>
-            <span className="hover:text-red-500">Sports</span>
-            <span className="hover:text-red-500">Activities</span>
+            <span className="hover:text-orange-500">Movies</span>
+            <span className="hover:text-orange-500">Stream</span>
+            <span className="hover:text-orange-500">Events</span>
+            <span className="hover:text-orange-500">Plays</span>
+            <span className="hover:text-orange-500">Sports</span>
+            <span className="hover:text-orange-500">Activities</span>
           </div>
 
             <div className="flex item-center space-x-6 text-sm">

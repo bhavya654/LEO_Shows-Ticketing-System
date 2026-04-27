@@ -37,8 +37,7 @@ const Recommended = () => {
           <h2 className="text-2xl font-semibold">Recommended Movies</h2>
           <span 
             // onClick={() => navigate("/movies")}
-            className="text-md text-red-500 cursor-pointer hover:underline
-                font-medium">
+            className="text-md text-orange-500 cursor-pointer hover:underline font-medium">
             See All
           </span>
         </div>

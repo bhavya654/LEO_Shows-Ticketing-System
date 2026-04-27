@@ -7,11 +7,11 @@ import {
   FaPinterestP,
   FaLinkedinIn,
 } from "react-icons/fa";
-import mainLogo from "../../assets/main-icon-white.png";
+import mainLogo from "../../assets/Leo Shows-Picsart.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#2b2b2b] text-gray-400 text-sm ">
+    <footer className="bg-[#1F1E17] text-gray-400 text-sm ">
         <div className="border border-gray-600 w-full">
             <div className="flex flex-col items-center py-6">
                 <img src={mainLogo} alt="BookMyScreen Logo" className="w-28 mb-4" />
@@ -19,17 +19,17 @@ const Footer = () => {
 
                 {/* Social Icons */}
                 <div className="flex space-x-4 mb-4 mx-auto">
-                    <FaFacebookF className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
-                    <FaTwitter className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
-                    <FaInstagram className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
-                    <FaYoutube className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
-                    <FaPinterestP className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
-                    <FaLinkedinIn className="w-8 h-8 p-2 rounded-full bg-gray-700 text-white" />
+                    <FaFacebookF className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
+                    <FaTwitter className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
+                    <FaInstagram className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
+                    <FaYoutube className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
+                    <FaPinterestP className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
+                    <FaLinkedinIn className="w-8 h-8 p-2 rounded-full bg-[#656251] text-white" />
                 </div>
             
                 {/* Copyright */}
                 <p className="text-center text-xs px-4 max-w-4xl">
-                    Copyright 2025 © bookMyScreen Pvt Ltd. Ltd. All Rights Reserved.<br />
+                    Copyright 2025 © Leo Shows Pvt Ltd.  All Rights Reserved.<br />
                 </p>
                 <small>
                     The content and images used on this site are copyright protected and
