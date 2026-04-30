@@ -2,7 +2,7 @@ import {config as conf} from "dotenv";
 conf();
 
 const _config ={
-    port: process.env.PORT || 9000,
+    port: process.env.PORT || 8000,
     databaseURL: process.env.MONGO_CONNECTION_STRING
 }
 
