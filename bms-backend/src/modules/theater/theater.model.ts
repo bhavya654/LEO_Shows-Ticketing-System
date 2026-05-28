@@ -22,7 +22,7 @@ const theaterSchema = new mongoose.Schema<ITheater>(
       required: true,
     },
     state: {
-      type: [String] as any,
+      type: String,
       required: true,
     }
   }, { timestamps: true,}

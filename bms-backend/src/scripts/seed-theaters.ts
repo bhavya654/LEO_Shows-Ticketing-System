@@ -6,7 +6,7 @@ import { config } from "../config/config";
 dotenv.config();
 
 mongoose
-  .connect(config.databaseUrl as string)
+  .connect(config.databaseURL as string)
   .then(async () => {
     console.log("Connected to MongoDB ✅");
 
@@ -115,10 +115,10 @@ mongoose
 
     const brands = ["PVR", "INOX", "Cinepolis"];
     const logos: Record<string, string> = {
-      PVR: "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751788726/omht27letnpbbaj2w0op.avif",
-      INOX: "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751788726/yxjgnxhxlccfdon3fyzg.avif",
+      PVR: "https://res.cloudinary.com/do7mwrx9i/image/upload/v1779969319/omht27letnpbbaj2w0op_jl56ol.avif",
+      INOX: "https://res.cloudinary.com/do7mwrx9i/image/upload/v1779969319/yxjgnxhxlccfdon3fyzg_olnwac.avif",
       Cinepolis:
-        "https://res.cloudinary.com/amritrajmaurya/image/upload/v1751788726/eebu3t34depdmmgxyknq.avif",
+        "https://res.cloudinary.com/do7mwrx9i/image/upload/v1779969319/yxjgnxhxlccfdon3fyzg_olnwac.avif",
     };
 
     const theatres = [];

@@ -15,7 +15,7 @@ const generatePriceMap = () =>
     ["NORMAL", 270],
   ]);
 
-const formats = ["2D", "3D", "IMAX", "PVR PXL"];
+const formats = ["2D", "3D", "IMAX", "4DX"];
 
 // 🎞️ Realistic time slots
 const fixedTimeSlots = [
@@ -48,9 +48,9 @@ export const seedShow = async () => {
 //  const theatres = await TheaterModel.find({});
 
   
-  const movieIds = ["68e224451aeabaafaa43ac58", "68e224451aeabaafaa43ac57"];
+  const movieIds = ["6a182ab02a195fad8ecd76c6", "68e224451aeabaafaa43ac57"];
   const movies = await MovieModel.find({ _id: { $in: movieIds } });
-  const theatres = await TheaterModel.find({ state: "West Bengal" });
+  const theatres = await TheaterModel.find({ state: "Madhya Pradesh" });
 
   if (!movies.length || !theatres.length) {
     console.error("Movies or theatres not found. Please check IDs or state name.");
@@ -74,7 +74,7 @@ export const seedShow = async () => {
           const newShow = new ShowModel({
             movie: movie._id,
             theater: theatre._id,
-            location: theatre.state,
+            location: theatre.location,
             format: formats[Math.floor(Math.random() * formats.length)],
             audioType: "Dolby 7.1",
             startTime: slot.start, 
@@ -92,11 +92,11 @@ export const seedShow = async () => {
     }
   }
 
-  console.log("✅ Show seeding completed for selected movies in West Bengal.");
+  console.log("✅ Show seeding completed for selected movies in Madhya Pradesh.");
 };
 
 mongoose
-  .connect(config.databaseUrl as string)
+  .connect(config.databaseURL as string)
   .then(async () => {
     console.log("DB connected");
     await ShowModel.deleteMany({});

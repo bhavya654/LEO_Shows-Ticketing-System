@@ -5,5 +5,5 @@ export interface ITheater {
     location: string;
     logo: string; 
     city: string[];
-    state: Date;
+    state: string;
 }
