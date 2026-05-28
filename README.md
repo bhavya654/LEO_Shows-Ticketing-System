@@ -18,4 +18,4 @@ Install dependencies:
 For the backend: cd backend && npm install
 For the frontend: cd frontend && npm install
 Setup Environment Variables: Create a .env file in the backend directory with your MONGO_URI and JWT_SECRET.
-Run the project:npm run dev
+Run the project: npm run dev
