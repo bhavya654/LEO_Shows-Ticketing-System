@@ -29,7 +29,7 @@ export const getShowsByMovieDateLocation = async (movieId: string, date: string,
     return groupedShows;
 }
 
-//get show by id
+//get show by id   
 export const getShowById = async (showId: string) => {
     return await ShowModel.findById(showId).populate("movie theater");
 }

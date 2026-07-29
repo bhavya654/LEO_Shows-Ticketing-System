@@ -9,15 +9,15 @@ const MovieFilters = () => {
       {/* Language */}
       <div className="bg-white p-4 rounded-md">
         <div className="flex justify-between items-center mb-2">
-          <span className="font-medium">Languages</span>
-          <button className="text-orange-500">Clear</button>
+          <span className="font-medium">Langugaes</span>
+          <button className="text-[#f74362]">Clear</button>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {languages.map((lang, i) => (
             <span
               className="border border-gray-200 
-                    text-orange-500 px-3 py-1 text-sm rounded hover:bg-gray-100 cursor-pointer"
+                    text-[#f74362] px-3 py-1 text-sm rounded hover:bg-gray-100 cursor-pointer"
             >
               {lang}
             </span>
@@ -29,18 +29,18 @@ const MovieFilters = () => {
       <div className="bg-white -mt-3 p-4 rounded">
         <div className="flex justify-between items-center mb-2">
           <span className="font-medium">Genres</span>
-          <button className="text-orange-500 text-sm">Clear</button>
+          <button className="text-[#f74362] text-sm">Clear</button>
         </div>
       </div>
 
       <div className="bg-white -mt-3 p-4 rounded">
         <div className="flex justify-between items-center mb-2">
           <span className="font-medium">Format</span>
-          <button className="text-orange-500 text-sm">Clear</button>
+          <button className="text-[#f74362] text-sm">Clear</button>
         </div>
       </div>
-     
-      <button className="w-full border cursor-pointer border-orange-500 text-orange-500 py-1 rounded hover:bg-orange-500 hover:text-white transition">
+
+      <button className="w-full border cursor-pointer border-[#f74362] text-[#f74362] py-1 rounded hover:bg-[#f74362] hover:text-white transition">
         Browse by Cinemas
       </button>
     </div>
