@@ -1,12 +1,13 @@
 import { Types } from "mongoose";
 import { IMovie } from "../modules/movie/movie.interface";
 import { IShow } from "../modules/show/show.interface";
-import { ITheater } from "../modules/theater/theater.interface";
+import { IThreater } from "../modules/theater/theater.interface";
+import { customAlphabet } from "nanoid";
 
 type GroupedShow = {
   movie: Types.ObjectId | IMovie;
   theater: {
-    theaterDetails: Types.ObjectId | ITheater;
+    theaterDetails: Types.ObjectId | IThreater;
     shows: Array<{
       _id: string;
       date: string;
@@ -92,13 +93,19 @@ export const groupShowsByTheatreAndMovie = (shows: IShow[]): GroupedShow[] => {
     }
 
     grouped[key].theater.shows.push({
-      _id: String(show._id ?? ""),
-      date: String(show.date ?? ""),
-      startTime: String(show.startTime ?? ""),
-      format: String(show.format ?? ""),
-      audioType: String(show.audioType ?? ""),
+      _id: show._id ?? "",
+      date: show.date ?? "",
+      startTime: show.startTime ?? "",
+      format: show.format ?? "",
+      audioType: show.audioType ?? "",
     });
   });
 
   return Object.values(grouped);
+};
+
+
+const nanoid = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 8);
+export const generateBookingReference = (): string => {
+  return `BMS-${nanoid()}`;
 };

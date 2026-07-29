@@ -50,7 +50,7 @@ const movies = [
     title: "F1: The Movie",
     genre: ["Sports", "Documentary"],
     rating: 9.5,
-    votes: 6800,
+    votes: 96800,
     languages: ["English", "Hindi", "Tamil", "Telugu"],
     certification: "UA16+",
     duration: "2h",
@@ -152,7 +152,7 @@ const movies = [
 
 const seedMovies = async () => {
   try {
-    await mongoose.connect(config.databaseURL as string);
+    await mongoose.connect(config.databaseReplicaSet as string);
     console.log("Connected to DB");
 
     await MovieModel.deleteMany();

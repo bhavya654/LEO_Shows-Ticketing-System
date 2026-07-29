@@ -1,11 +1,12 @@
-import express from "express";
+
+
+import { Router } from "express";
 import * as ShowController from "./show.controller";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", ShowController.createController as express.RequestHandler);
-router.get("/search", ShowController.getShowsByMovieDateLocation as express.RequestHandler);
-router.get("/:id", ShowController.getShowById as express.RequestHandler);
-router.put("/seat-status", ShowController.updateSeatStatus as express.RequestHandler);
+router.post("/", ShowController.createShow);
+router.get("/", ShowController.getShowsByMovieDateLocation);
+router.get("/:id", ShowController.getShowById);
 
 export default router;

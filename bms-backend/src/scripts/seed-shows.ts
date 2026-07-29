@@ -15,7 +15,7 @@ const generatePriceMap = () =>
     ["NORMAL", 270],
   ]);
 
-const formats = ["2D", "3D", "IMAX", "4DX"];
+const formats = ["2D", "3D", "IMAX", "PVR PXL"];
 
 // 🎞️ Realistic time slots
 const fixedTimeSlots = [
@@ -35,22 +35,9 @@ const toDateWithTime = (baseDate: Date, timeStr: string) => {
 };
 
 export const seedShow = async () => {
-
-// NOTE:
-// First seed your movies and then theaters.
-// After that, select any two movies for which you want to create shows
-// and paste their IDs in the movieIds array below.
-// Also, pass your current state (e.g., "West Bengal") to filter theatres.
-// This setup is only for testing purposes to avoid creating shows for all movies.
-
-// Otherwise, you can also do the things below commented if you want to create shows for all movies and states
-//  const movies = await MovieModel.find({});
-//  const theatres = await TheaterModel.find({});
-
-  
-  const movieIds = ["6a182ab02a195fad8ecd76c6", "68e224451aeabaafaa43ac57"];
-  const movies = await MovieModel.find({ _id: { $in: movieIds } });
-  const theatres = await TheaterModel.find({ state: "Madhya Pradesh" });
+  // const movieIds = ["69b175f1c6348a9ed819baf6", "69b175f1c6348a9ed819baf7"];
+  const movies = await MovieModel.find();
+  const theatres = await TheaterModel.find();
 
   if (!movies.length || !theatres.length) {
     console.error("Movies or theatres not found. Please check IDs or state name.");
@@ -74,7 +61,7 @@ export const seedShow = async () => {
           const newShow = new ShowModel({
             movie: movie._id,
             theater: theatre._id,
-            location: theatre.location,
+            location: theatre.state,
             format: formats[Math.floor(Math.random() * formats.length)],
             audioType: "Dolby 7.1",
             startTime: slot.start, 
@@ -92,11 +79,11 @@ export const seedShow = async () => {
     }
   }
 
-  console.log("✅ Show seeding completed for selected movies in Madhya Pradesh.");
+  console.log("✅ Show seeding completed for selected movies in West Bengal.");
 };
 
 mongoose
-  .connect(config.databaseURL as string)
+  .connect(config.databaseReplicaSet as string)
   .then(async () => {
     console.log("DB connected");
     await ShowModel.deleteMany({});
