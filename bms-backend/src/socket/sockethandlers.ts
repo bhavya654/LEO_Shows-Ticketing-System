@@ -55,9 +55,14 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
    * We lock seats for 5 minutes
    */
 
-  socket.on("lock-seats", async ({ showId, seatIds, userId }) => {
+  socket.on("lock-seats", async ({ showId, seatIds, userId }, callback) => {
     const roomId = String(showId || "").trim();
-    if (!seatIds || !roomId || !userId) return;
+    if (!seatIds || !roomId || !userId) {
+      if (typeof callback === "function") {
+        callback({ success: false, alreadyLocked: [] });
+      }
+      return;
+    }
 
     const lockedSeatsKeys: string = `locked-seats:${roomId}`;
     const unavailableSeats: string[] = [];
@@ -84,6 +89,10 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
         requested: seatIds,
         alreadyLocked: unavailableSeats,
       });
+
+      if (typeof callback === "function") {
+        callback({ success: false, alreadyLocked: unavailableSeats });
+      }
 
       return;
     }
@@ -115,6 +124,10 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
       seatIds,
       userId,
     });
+
+    if (typeof callback === "function") {
+      callback({ success: true, seatIds });
+    }
 
     console.log(`✅ ${userId} locked seats:`, seatIds, `in room ${roomId}`);
   });

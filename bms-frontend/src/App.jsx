@@ -7,6 +7,7 @@ import MovieDetails from "./pages/MovieDetails";
 import Profile from "./pages/Profile";
 import SeatLayout from "./pages/SeatLayout";
 import Checkout from "./pages/Checkout";
+import SignInModel from "./components/shared/SignInModel";
 import { Toaster } from "react-hot-toast";
 import { useLoadUser } from "./hooks/useLoadUser";
 import FullScreenLoader from "./components/shared/FullScreenLoader";
@@ -46,6 +47,7 @@ function  App() {
       />
       <div className="flex flex-col min-h-screen">
         {!isSeatLayoutPage && !isCheckoutPage && <Header />}
+        <SignInModel />
         <main className="flex-grow">
           <Routes>
             {/* Define your routes here */}

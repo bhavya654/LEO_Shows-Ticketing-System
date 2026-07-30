@@ -6,9 +6,9 @@ import { FaInfoCircle } from "react-icons/fa";
 import { BiSolidOffer } from "react-icons/bi";
 import { CiCircleQuestion, CiUser } from "react-icons/ci";
 import { useAuth } from "../context/AuthContext";
-import { useLocation } from "../context/LocationContext";
+import { useAppLocation } from "../context/LocationContext";
 import { useSeatContext } from "../context/SeatContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation as useRouterLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 // import { razorPayScript } from "../utils/constants";
 import { useMutation } from "@tanstack/react-query";
@@ -32,44 +32,58 @@ function loadScript(src) {
 
 const Checkout = () => {
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes = 300 seconds
-  useEffect(() => {
-
-    const interval = setInterval(() => {
-        setTimeLeft(prev => {
-          if(prev <= 1){
-            clearInterval(interval);
-
-            socket.emit("unlock-seats", {
-              showId: showData._id,
-              userId: user._id
-            })
-
-            toast.error("Time expired!")
-            navigate("/");
-
-            return 0;
-          }
-          
-          return prev - 1;
-        })
-    }, 1000)
-
-    return () => clearInterval(interval) // cleanup
-
-  }, [])
-
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { location } = useLocation();
-  const { selectedSeats, shows: showData } = useSeatContext();
+  const { location: appLocation } = useAppLocation();
+  const routerLocation = useRouterLocation();
+  const { selectedSeats: selectedSeatsContext, shows: showDataContext } = useSeatContext();
+  const routeState = routerLocation.state || {};
+  const selectedSeats =
+    Array.isArray(selectedSeatsContext) && selectedSeatsContext.length > 0
+      ? selectedSeatsContext
+      : Array.isArray(routeState.selectedSeats)
+      ? routeState.selectedSeats
+      : [];
+  const showData = showDataContext || routeState.showData;
   const { base, tax, total } = calculateTotalPrice(selectedSeats);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    console.log(showData)
+    if (!showData || !user) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+
+          socket.emit("unlock-seats", {
+            showId: showData._id,
+            userId: user._id,
+          });
+
+          toast.error("Time expired!");
+          navigate("/");
+
+          return 0;
+        }
+
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showData, user, navigate]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
     if (!showData || selectedSeats.length === 0) {
       navigate("/");
     }
-  }, []);
+  }, [isMounted, showData, selectedSeats, navigate]);
 
 
   /* Payment Gateway Integration Start */
@@ -298,7 +312,7 @@ const Checkout = () => {
                 <p className="text-sm font-medium">{user.name}</p>
                 <p className="text-sm text-gray-600">+91-{user?.phone}</p>
                 <p className="text-sm text-gray-600">{user?.email}</p>
-                <p className="text-sm text-gray-600">{location}</p>
+                <p className="text-sm text-gray-600">{appLocation}</p>
               </div>
             </div>
 

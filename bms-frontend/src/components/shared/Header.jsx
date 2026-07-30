@@ -1,12 +1,15 @@
 import React from 'react'
 import { FaSearch, FaUser } from 'react-icons/fa'
 import mainLogo from '../../assets/Leo Shows.png'
+import { useNavigate } from 'react-router-dom'
 import { useLocation } from '../../context/LocationContext';
+import { useAuth } from '../../context/AuthContext';
 import map from "../../assets/pin.gif"
 
 const Header = () => {
-
+    const navigate = useNavigate();
     const {location, loading, error} = useLocation();
+    const { auth, user, toggleModal, logoutRequest } = useAuth();
 
   return (
     <div className="w-full text-sm bg-white">
@@ -32,15 +35,38 @@ const Header = () => {
           {/* Right Part */}
           <div className="flex item-center space-x-6">
             <div className="text-sm font-medium cursor-pointer border rounded-full border-[#88856E] p-2">
-               {!location && <img src={map} alt='loading..'className='w-5 h-5'/>}
+               {!location && <img src={map} alt='loading..' className='w-5 h-5' />}
                {location && <p>{location} &nbsp; ▼</p> }
             </div>
             <span className="cursor-pointer text-sm font-medium border rounded-full border-[#88856E] p-2">
-              <FaUser className="text-[#88856E" />
+              <FaUser className="text-[#88856E]" />
             </span>
-            <button className="bg-orange-500 text-white px-4 py-1.5 rounded text-sm hover:bg-[#F8AF26]/90 transition duration-200 font-medium">
-              Sign in
-            </button>
+            {auth ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/profile/${user?._id}/profile`)}
+                  className="text-gray-700 px-4 py-1.5 rounded text-sm border border-[#88856E] hover:bg-gray-100 transition duration-200 font-medium"
+                >
+                  Hi, {user?.name || 'User'}
+                </button>
+                <button
+                  type="button"
+                  onClick={logoutRequest}
+                  className="bg-red-500 text-white px-4 py-1.5 rounded text-sm hover:bg-red-600 transition duration-200 font-medium"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => toggleModal()}
+                className="bg-orange-500 text-white px-4 py-1.5 rounded text-sm hover:bg-[#F8AF26]/90 transition duration-200 font-medium"
+              >
+                Sign in
+              </button>
+            )}
           </div>
         </div>
       </div>

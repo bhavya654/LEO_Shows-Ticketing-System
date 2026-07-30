@@ -78,39 +78,63 @@ const SeatLayout = () => {
     setSelectedSeats([]);
     setLockedSeats([]);
 
+    const normalizeSeatIds = (seatIds) => {
+      if (Array.isArray(seatIds)) return seatIds.map((seatId) => String(seatId));
+      if (typeof seatIds === "string") return [seatIds];
+      return [];
+    };
+
     const handleInitialLockedSeats = ({ seatIds }) => {
-      setLockedSeats(Array.isArray(seatIds) ? seatIds : []);
+      setLockedSeats(normalizeSeatIds(seatIds));
     };
 
     const handleSeatLocked = ({ seatIds, showId: incomingShowId }) => {
       if (incomingShowId !== effectiveShowId) return;
 
+      const normalizedSeatIds = normalizeSeatIds(seatIds);
+      if (!normalizedSeatIds.length) return;
+
       setLockedSeats((prev) => {
         const next = Array.isArray(prev) ? prev : [];
-        return [...new Set([...next, ...seatIds])];
+        return [...new Set([...next, ...normalizedSeatIds])];
+      });
+
+      setSelectedSeats((prev) => {
+        const next = Array.isArray(prev) ? prev : [];
+        const deselected = next.filter((seatId) => normalizedSeatIds.includes(seatId));
+        if (!deselected.length) return next;
+
+        toast.error(
+          `Seat(s) locked: ${deselected.join(", ")}. They have been removed from your selection.`
+        );
+        return next.filter((seatId) => !normalizedSeatIds.includes(seatId));
       });
     };
 
     const handleSeatUnlocked = ({ seatIds, showId: incomingShowId }) => {
       if (incomingShowId !== effectiveShowId) return;
 
+      const normalizedSeatIds = normalizeSeatIds(seatIds);
+      if (!normalizedSeatIds.length) return;
+
       setLockedSeats((prev) => {
         const next = Array.isArray(prev) ? prev : [];
-        return next.filter((id) => !seatIds.includes(id));
+        return next.filter((id) => !normalizedSeatIds.includes(id));
       });
     };
 
     const handleSeatLockedFailed = ({ alreadyLocked }) => {
-      if (Array.isArray(alreadyLocked) && alreadyLocked.length) {
-        toast.error(`Some seats are already locked: ${alreadyLocked.join(", ")}`);
-      }
+      if (!Array.isArray(alreadyLocked) || alreadyLocked.length === 0) return;
+
+      toast.error(`Some seats are already locked: ${alreadyLocked.join(", ")}`);
+      setSelectedSeats((prev) => prev.filter((seatId) => !alreadyLocked.includes(seatId)));
     };
 
-    socket.emit("join-show", { showId: effectiveShowId });
     socket.on("locked-seats-initials", handleInitialLockedSeats);
     socket.on("seat-locked", handleSeatLocked);
     socket.on("seat-unlocked", handleSeatUnlocked);
     socket.on("seat-locked-failed", handleSeatLockedFailed);
+    socket.emit("join-show", { showId: effectiveShowId });
 
     return () => {
       socket.off("locked-seats-initials", handleInitialLockedSeats);
@@ -192,7 +216,14 @@ const SeatLayout = () => {
 
         {/* Fixed Footer */}
         <div className="fixed bottom-0 left-0 w-full h-[100px] bg-white border-t border-gray-200 py-4 px-4 z-10">
-          <Footer isSelected={isSelectedSeats} selectedSeats={selectedSeats} showData={showData} state={location} showId={effectiveShowId} />
+          <Footer
+            isSelected={isSelectedSeats}
+            selectedSeats={selectedSeats}
+            showData={showData}
+            state={location || "India"}
+            showId={effectiveShowId}
+            lockedSeats={lockedSeats}
+          />
         </div>
       </div>
     </>

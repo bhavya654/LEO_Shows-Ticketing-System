@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
 
     const toggleModal = () => {
-        setShowModal(!showModal)
+        setShowModal((prev) => !prev);
         if(step !== 1){
             setStep(1);
         }

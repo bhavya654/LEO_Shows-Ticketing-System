@@ -48,3 +48,4 @@ export const LocationProvide = ({children}) => {
 }
 
 export const useLocation = () => useContext(LocationContext);
+export const useAppLocation = () => useContext(LocationContext);
