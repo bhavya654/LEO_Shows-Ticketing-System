@@ -38,6 +38,7 @@ export const seedShow = async () => {
   // const movieIds = ["69b175f1c6348a9ed819baf6", "69b175f1c6348a9ed819baf7"];
   const movies = await MovieModel.find();
   const theatres = await TheaterModel.find();
+  const currentState = process.env.CURRENT_STATE || "Madhya Pradesh";
 
   if (!movies.length || !theatres.length) {
     console.error("Movies or theatres not found. Please check IDs or state name.");
@@ -48,6 +49,11 @@ export const seedShow = async () => {
 
   for (const movie of movies) {
     for (const theatre of theatres) {
+      const theaterState = theatre.state?.toString() || "";
+      if (theaterState && !new RegExp(currentState, "i").test(theaterState)) {
+        continue;
+      }
+
       for (let d = 0; d < 2; d++) { // ✅ today and tomorrow
         const showDate = today.add(d, "day");
         const formattedDate = showDate.format("DD-MM-YYYY");
@@ -57,11 +63,14 @@ export const seedShow = async () => {
         for (const slot of selectedSlots) {
           const startTime = toDateWithTime(showDate.toDate(), slot.start);
           const endTime = toDateWithTime(showDate.toDate(), slot.end);
+          const location = [theatre.location, theatre.city, theatre.state]
+            .filter(Boolean)
+            .join(", ") || "Unknown location";
 
           const newShow = new ShowModel({
             movie: movie._id,
             theater: theatre._id,
-            location: theatre.state,
+            location,
             format: formats[Math.floor(Math.random() * formats.length)],
             audioType: "Dolby 7.1",
             startTime: slot.start, 
@@ -79,7 +88,7 @@ export const seedShow = async () => {
     }
   }
 
-  console.log("✅ Show seeding completed for selected movies in West Bengal.");
+  console.log(`✅ Show seeding completed for selected movies in ${currentState}.`);
 };
 
 mongoose

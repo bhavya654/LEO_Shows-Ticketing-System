@@ -3,7 +3,8 @@ import { config } from "./config";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(config.databaseReplicaSet as string);
+        const mongoUri = config.databaseReplicaSet || config.databaseUrl;
+        await mongoose.connect(mongoUri as string);
         console.log("Connected to database");
     } catch (error) {
         console.log("Failed to connect to database", error);

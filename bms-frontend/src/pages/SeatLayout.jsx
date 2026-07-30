@@ -37,7 +37,7 @@ const Seat = ({ seat, row, selectedSeats, lockedSeats , onClick }) => {
 
 const SeatLayout = () => {
 
-  const [lockedSeats, setLockedSeats] = useState();
+  const [lockedSeats, setLockedSeats] = useState([]);
   const { selectedSeats, setSelectedSeats } = useSeatContext();
   const { location } = useLocation();
 
@@ -65,37 +65,60 @@ const SeatLayout = () => {
   });
 
 
+  const effectiveShowId = showData?._id || showId;
+
   const isSelectedSeats = selectedSeats.length > 0;
 
 
   /* Socket.io Code start  */
 
   useEffect(() => {
+    if (!effectiveShowId) return;
+
     setSelectedSeats([]);
-    socket.emit("join-show", {showId});
-    socket.on("locked-seats-initials", ({seatIds}) => {
-      setLockedSeats(seatIds);
-    })
+    setLockedSeats([]);
 
-    socket.on("seat-locked", ({seatIds, showId: incommingShowId}) => {
-      if(incommingShowId !== showId) return;
+    const handleInitialLockedSeats = ({ seatIds }) => {
+      setLockedSeats(Array.isArray(seatIds) ? seatIds : []);
+    };
 
-      setLockedSeats((prev) => [...new Set([...prev, ...seatIds])]);
-    })
+    const handleSeatLocked = ({ seatIds, showId: incomingShowId }) => {
+      if (incomingShowId !== effectiveShowId) return;
 
-    socket.on("seat-unlocked", ({seatIds, showId:incommingShowId}) => {
-      if(incommingShowId !== showId) return;
+      setLockedSeats((prev) => {
+        const next = Array.isArray(prev) ? prev : [];
+        return [...new Set([...next, ...seatIds])];
+      });
+    };
 
-      setLockedSeats((prev) => prev.filter((id) => !seatIds.includes(id)));
-    })
+    const handleSeatUnlocked = ({ seatIds, showId: incomingShowId }) => {
+      if (incomingShowId !== effectiveShowId) return;
 
-    socket.on("seat-locked-failed", ({showId,
-        requested: seatIds,
-        alreadyLocked,}) => {
-          toast.error(`Some seats are already locked: ${alreadyLocked.join(", ")}`)
-        })
+      setLockedSeats((prev) => {
+        const next = Array.isArray(prev) ? prev : [];
+        return next.filter((id) => !seatIds.includes(id));
+      });
+    };
 
-  },[showId])
+    const handleSeatLockedFailed = ({ alreadyLocked }) => {
+      if (Array.isArray(alreadyLocked) && alreadyLocked.length) {
+        toast.error(`Some seats are already locked: ${alreadyLocked.join(", ")}`);
+      }
+    };
+
+    socket.emit("join-show", { showId: effectiveShowId });
+    socket.on("locked-seats-initials", handleInitialLockedSeats);
+    socket.on("seat-locked", handleSeatLocked);
+    socket.on("seat-unlocked", handleSeatUnlocked);
+    socket.on("seat-locked-failed", handleSeatLockedFailed);
+
+    return () => {
+      socket.off("locked-seats-initials", handleInitialLockedSeats);
+      socket.off("seat-locked", handleSeatLocked);
+      socket.off("seat-unlocked", handleSeatUnlocked);
+      socket.off("seat-locked-failed", handleSeatLockedFailed);
+    };
+  }, [effectiveShowId, setSelectedSeats]);
 
 
   console.log("lockedseats: ", lockedSeats);
@@ -169,7 +192,7 @@ const SeatLayout = () => {
 
         {/* Fixed Footer */}
         <div className="fixed bottom-0 left-0 w-full h-[100px] bg-white border-t border-gray-200 py-4 px-4 z-10">
-          <Footer isSelected={isSelectedSeats} selectedSeats={selectedSeats} showData={showData} state={location}  />
+          <Footer isSelected={isSelectedSeats} selectedSeats={selectedSeats} showData={showData} state={location} showId={effectiveShowId} />
         </div>
       </div>
     </>

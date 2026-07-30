@@ -10,11 +10,17 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
    */
 
   socket.on("join-show", async ({ showId }) => {
-    // Join the room using showId
-    socket.join(showId);
-    socket.data.showId = showId;
+    const roomId = String(showId || "").trim();
+    if (!roomId) return;
 
-    console.log(`✅ Socket ${socket.id} joined show ${showId}`);
+    if (socket.data.showId && socket.data.showId !== roomId) {
+      await socket.leave(socket.data.showId);
+    }
+
+    await socket.join(roomId);
+    socket.data.showId = roomId;
+
+    console.log(`✅ Socket ${socket.id} joined show ${roomId}`);
 
     /**
      * Fetch all locked seats from Redis SET
@@ -50,9 +56,10 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
    */
 
   socket.on("lock-seats", async ({ showId, seatIds, userId }) => {
-    if (!seatIds || !showId || !userId) return;
+    const roomId = String(showId || "").trim();
+    if (!seatIds || !roomId || !userId) return;
 
-    const lockedSeatsKeys: string = `locked-seats:${showId}`;
+    const lockedSeatsKeys: string = `locked-seats:${roomId}`;
     const unavailableSeats: string[] = [];
 
     /**
@@ -73,7 +80,7 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
      */
     if (unavailableSeats.length > 0) {
       socket.emit("seat-locked-failed", {
-        showId,
+        showId: roomId,
         requested: seatIds,
         alreadyLocked: unavailableSeats,
       });
@@ -103,13 +110,13 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
     /**
      * STEP 3: Broadcast seat lock to everyone in the show
      */
-    io.to(showId).emit("seat-locked", {
-      showId,
+    io.to(roomId).emit("seat-locked", {
+      showId: roomId,
       seatIds,
       userId,
     });
 
-    console.log(`✅ ${userId} locked seats:`, seatIds);
+    console.log(`✅ ${userId} locked seats:`, seatIds, `in room ${roomId}`);
   });
 
   /**
@@ -121,9 +128,10 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
    */
 
   socket.on("unlock-seats", async ({ showId, seatIds, userId }) => {
-    if (!showId || !seatIds?.length) return;
+    const roomId = String(showId || "").trim();
+    if (!roomId || !seatIds?.length) return;
 
-    const lockedSeatsKeys = `locked-seats:${showId}`;
+    const lockedSeatsKeys = `locked-seats:${roomId}`;
 
     for (const seatId of seatIds) {
       const seatLockKey = `seat-lock:${showId}:${seatId}`;
@@ -141,13 +149,13 @@ export const registerSocketHandlers = (socket: Socket, io: Server) => {
     /**
      * Notify all clients that seats are unlocked
      */
-    io.to(showId).emit("seat-unlocked", {
-      showId,
+    io.to(roomId).emit("seat-unlocked", {
+      showId: roomId,
       seatIds,
       userId,
     });
 
-    console.log(`🔓 ${userId} unlocked seats:`, seatIds);
+    console.log(`🔓 ${userId} unlocked seats:`, seatIds, `in room ${roomId}`);
   });
 
   /**

@@ -3,7 +3,7 @@ conf();
 
 const _config = {
     port: process.env.PORT,
-    databaseUrl: process.env.MONGO_CONNECTION_STRING,
+    databaseUrl: process.env.MONGO_CONNECTION_STRING as string,
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET as string,
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET as string,
     hashingSecret: process.env.HASH_SECRET as string,
@@ -13,7 +13,7 @@ const _config = {
     redisPort: parseInt(process.env.REDIS_PORT || "6379"),
     razorpayKey : process.env.RAZORPAY_API_KEY as string,
     razorpaySecret : process.env.RAZORPAY_SECRET_KEY as string,
-    databaseReplicaSet: process.env.MONGO_REPLICA_STRING as string,
+    databaseReplicaSet: (process.env.MONGO_REPLICA_STRING || process.env.MONGO_CONNECTION_STRING) as string,
 }
 
 export const config = Object.freeze(_config);

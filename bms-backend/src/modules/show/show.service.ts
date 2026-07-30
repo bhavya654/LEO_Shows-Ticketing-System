@@ -18,7 +18,6 @@ export const getShowsByMovieDateLocation = async (
 ) => {
   const query: any = {
     movie: new Types.ObjectId(movieId),
-    location: { $regex: new RegExp(location, "i") },
   };
 
   if (date) {
@@ -29,7 +28,20 @@ export const getShowsByMovieDateLocation = async (
     .populate("movie theater")
     .sort({ startTime: 1 });
 
-  const groupedShows = groupShowsByTheatreAndMovie(shows);
+  const filteredShows = shows.filter((show: any) => {
+    const stateValue = location?.trim();
+    if (!stateValue) return true;
+
+    const showLocation = show.location?.toString() || "";
+    const theaterState = show.theater?.state?.toString() || "";
+    const theaterCity = show.theater?.city?.toString() || "";
+
+    return new RegExp(stateValue, "i").test(showLocation) ||
+      new RegExp(stateValue, "i").test(theaterState) ||
+      new RegExp(stateValue, "i").test(theaterCity);
+  });
+
+  const groupedShows = groupShowsByTheatreAndMovie(filteredShows);
 
   return groupedShows;
 };

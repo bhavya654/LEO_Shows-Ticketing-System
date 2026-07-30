@@ -4,7 +4,7 @@ import { useSeatContext } from "../../context/SeatContext";
 import { socket } from "../../utils/socket";
 import { useAuth } from "../../context/AuthContext";
 
-const Footer = ({ isSelected, selectedSeats, showData, state }) => {
+const Footer = ({ isSelected, selectedSeats, showData, state, showId }) => {
   const navigate = useNavigate();
   const { setShows } = useSeatContext();
   const { user } = useAuth();
@@ -13,12 +13,12 @@ const Footer = ({ isSelected, selectedSeats, showData, state }) => {
 
     // send lock request to socket.io server
     socket.emit("lock-seats", {
-      showId: showData._id,
+      showId,
       seatIds: selectedSeats,
       userId: user._id
     })
 
-    navigate(`/shows/${showData._id}/${state}/checkout`);
+    navigate(`/shows/${showId}/${state}/checkout`);
     setShows(showData);
   }
 

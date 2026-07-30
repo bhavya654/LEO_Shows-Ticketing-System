@@ -1,7 +1,7 @@
 import React from "react";
 import BannerSlider from "../components/shared/BannerSlider";
-import MovieFilters from "../components/movies/MovieFilters";
-import MovieList from "../components/movies/MovieList";
+import MovieFilters from "../components/Movies/MovieFilter.jsx";
+import MovieList from "../components/Movies/MovieList";
 import { getAllMovies } from "../apis/index";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 

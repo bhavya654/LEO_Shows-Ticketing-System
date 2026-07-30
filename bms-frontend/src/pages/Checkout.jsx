@@ -10,7 +10,7 @@ import { useLocation } from "../context/LocationContext";
 import { useSeatContext } from "../context/SeatContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { razorPayScript } from "../utils/constants";
+// import { razorPayScript } from "../utils/constants";
 import { useMutation } from "@tanstack/react-query";
 import { bookShow, createOrderRazorpay, verifyPaymentRazorpay } from "../apis/index";
 import { socket  } from "../utils/socket";

@@ -52,8 +52,8 @@ function  App() {
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<Movies />} />
             <Route path="/movies/:state/:movieName/:id/ticket" element={<MovieDetails />} />
+            <Route path="/movies/:movieId/:movieName/:state/theater/:theaterId/show/:showId/seat-layout" element={<SeatLayout />} />
             <Route element={<PrivateRoute />}>
-              <Route path="/movies/:movieId/:movieName/:state/theater/:theaterId/show/:showId/seat-layout" element={<SeatLayout />} />
               <Route path="/profile/:id/:tab" element={<Profile />} />
               </Route>
             <Route path="/shows/:showId/:state/checkout" element={<Checkout />} />

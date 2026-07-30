@@ -131,8 +131,8 @@ mongoose
         theatres.push({
           name: `${brand} ${area}`,
           location: `${area}, ${city.name}`,
-          city: city.name,
-          state: city.state, // ✅ Added here
+          city: String(city.name),
+          state: String(city.state),
           logo: logos[brand],
         });
       }
