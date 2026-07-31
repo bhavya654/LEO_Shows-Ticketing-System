@@ -33,13 +33,20 @@ const verifyOTP = (hashedOTP, data) => {
 exports.verifyOTP = verifyOTP;
 // send otp to user via email;
 const _config = {
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
         user: config_1.config.emailUsername,
         pass: config_1.config.emailPassword,
     },
 };
 const transporter = nodemailer_1.default.createTransport(_config);
+transporter.verify().then(() => {
+    console.log("Email transporter configured successfully");
+}).catch((error) => {
+    console.error("Email transporter setup failed:", error?.message || error);
+});
 const mailGenerator = new mailgen_1.default({
     theme: "default",
     product: {
@@ -66,13 +73,14 @@ const sendOTPtoEmail = async (email, otp) => {
     };
     const mail = mailGenerator.generate(emailTemp);
     let message = {
-        from: config_1.config.emailUsername,
+        from: `"LeoShows" <${config_1.config.emailUsername}>`,
         to: email,
         subject: "Your OTP for LeoShows",
-        html: mail
+        html: mail,
+        text: `Your OTP is ${otp}. It will expire in 2 minutes. If you did not request this, please ignore this email.`,
     };
     const info = await transporter.sendMail(message);
-    console.log(info);
+    console.log("OTP email sent", info);
     return info.messageId;
 };
 exports.sendOTPtoEmail = sendOTPtoEmail;
