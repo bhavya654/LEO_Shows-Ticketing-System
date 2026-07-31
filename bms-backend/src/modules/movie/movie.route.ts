@@ -1,5 +1,5 @@
 import express from 'express';
-import * as MovieController from './movie.controller';
+import * as MovieController from './movie.Controller';
 import { validate } from '../../middlewares/validate';
 import { MovieSchema } from './movie.validation';
 
