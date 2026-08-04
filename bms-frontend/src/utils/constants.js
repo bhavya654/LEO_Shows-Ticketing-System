@@ -353,7 +353,7 @@ export const ordersData = [
 
 export const filters = ["2D", "3D", "Wheelchair Friendly", "Premium Seats", "Recliners", "IMAX", "PVR PXL", "4DX", "Laser", "Dolby Atmos"];
 
-export const tabs = ["Profile", "Your Orders"];
+export const tabs = ["Profile", "BOOKINGS"];
 
 export const countryCodes = [
   { name: "India", code: "IN", dial_code: "+91" },
@@ -378,3 +378,5 @@ export const countryCodes = [
   { name: "Malaysia", code: "MY", dial_code: "+60" },
   // Add more if needed
 ];
+
+export const razorPayScript ="https://checkout.razorpay.com/v1/checkout.js";

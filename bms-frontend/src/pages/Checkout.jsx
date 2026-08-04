@@ -10,10 +10,11 @@ import { useAppLocation } from "../context/LocationContext";
 import { useSeatContext } from "../context/SeatContext";
 import { useNavigate, useLocation as useRouterLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-// import { razorPayScript } from "../utils/constants";
+import { razorPayScript } from "../utils/constants";
 import { useMutation } from "@tanstack/react-query";
 import { bookShow, createOrderRazorpay, verifyPaymentRazorpay } from "../apis/index";
 import { socket  } from "../utils/socket";
+import FullScreenLoader from "../components/shared/FullScreenLoader";
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -47,6 +48,7 @@ const Checkout = () => {
   const showData = showDataContext || routeState.showData;
   const { base, tax, total } = calculateTotalPrice(selectedSeats);
   const [isMounted, setIsMounted] = useState(false);
+  const [isFinalizingPayment, setIsFinalizingPayment] = useState(false);
 
   useEffect(() => {
     if (!showData || !user) return;
@@ -104,8 +106,7 @@ const Checkout = () => {
         order_id: orderData?.id,
         handler: async function (response) {
           console.log(response);
-          verifyPaymentMutation.mutate(response);
-
+          setIsFinalizingPayment(true);
 
           const reqData = {
             showId: showData._id,
@@ -118,7 +119,24 @@ const Checkout = () => {
             }
           }
 
-          bookTicketMutation.mutate(reqData);
+          verifyPaymentMutation.mutate(response, {
+            onSuccess: () => {
+              bookTicketMutation.mutate(reqData, {
+                onSuccess: () => {
+                  setIsFinalizingPayment(false);
+                  navigate(`/profile/${user._id}/BOOKINGS`);
+                },
+                onError: () => {
+                  setIsFinalizingPayment(false);
+                  toast.error("Booking failed. Please try again.");
+                },
+              });
+            },
+            onError: () => {
+              setIsFinalizingPayment(false);
+              toast.error("Payment verification failed. Please try again.");
+            }
+          });
         },
         prefill: {
           name: user?.name,
@@ -141,10 +159,11 @@ const Checkout = () => {
   const verifyPaymentMutation = useMutation({
     mutationFn : (reqData) => verifyPaymentRazorpay(reqData),
     onSuccess: (data) => {
-      toast.success(data?.data.message)
+      toast.success(data?.data.message);
     },
     onError: (err) => {
       console.log(err);
+      toast.error("Payment verification failed. Please try again.");
     }
   })
 
@@ -158,12 +177,14 @@ const Checkout = () => {
         userId: user._id,
         seatIds: selectedSeats
       })
-      navigate(`/profile/${user._id}/booking`);
     },
     onError: (err) => {
       console.log(err);
+      toast.error("Booking failed. Please try again.");
     }
   })
+
+  const isPaymentProcessing = createOrderMutation.isLoading || verifyPaymentMutation.isLoading || bookTicketMutation.isLoading || isFinalizingPayment;
 
   const handleBookSeat = async () => {
       try {
@@ -198,6 +219,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen w-full bg-white">
+      {isPaymentProcessing && <FullScreenLoader />}
       <Header type="checkout" />
 
       <div className="max-w-6xl mx-auto px-4 py-6">
@@ -323,11 +345,16 @@ const Checkout = () => {
               </p>
             </div>
 
-            <div onClick={handleBookSeat} className="flex justify-between items-center bg-black rounded-[24px] px-6 py-4 cursor-pointer">
+            <div
+              onClick={!isPaymentProcessing ? handleBookSeat : undefined}
+              className={`flex justify-between items-center rounded-[24px] px-6 py-4 ${isPaymentProcessing ? "bg-gray-500 cursor-not-allowed" : "bg-black cursor-pointer"}`}
+            >
               <p className="text-white font-bold">
                 ₹{total} <span className="text-xs font-medium">TOTAL</span>
               </p>
-              <p className="text-white font-medium">Proceed To Pay</p>
+              <p className="text-white font-medium">
+                {isPaymentProcessing ? "Processing..." : "Proceed To Pay"}
+              </p>
             </div>
           </div>
         </div>

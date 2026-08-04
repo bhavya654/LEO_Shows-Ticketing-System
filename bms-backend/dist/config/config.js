@@ -16,7 +16,10 @@ const _config = {
     redisHost: normalizeEnv(process.env.REDIS_HOST),
     redisPort: parseInt(normalizeEnv(process.env.REDIS_PORT) || "6379"),
     razorpayKey: normalizeEnv(process.env.RAZORPAY_API_KEY),
-    razorpaySecret: normalizeEnv(process.env.RAZORPAY_SECRET_KEY),
+    razorpaySecret: normalizeEnv(process.env.RAZORPAY_SECRET_KEY || process.env.RAZORPAY_API_SECRET),
     databaseReplicaSet: normalizeEnv(process.env.MONGO_REPLICA_STRING) || normalizeEnv(process.env.MONGO_CONNECTION_STRING),
 };
+if (!_config.razorpayKey || !_config.razorpaySecret) {
+    throw new Error("Missing Razorpay credentials: set RAZORPAY_API_KEY and RAZORPAY_SECRET_KEY or RAZORPAY_API_SECRET.");
+}
 exports.config = Object.freeze(_config);

@@ -11,7 +11,7 @@ export const createOrder = async (paymentData: IPayementData) => {
         key_secret: config.razorpaySecret
     })
 
-    const { amount  } = paymentData;
+    const { amount } = paymentData;
 
     const option = {
         amount : amount * 100,
@@ -27,12 +27,12 @@ export const createOrder = async (paymentData: IPayementData) => {
 
 export const verifyPayement = async (paymentData : IVerifyPayment) => {
     const  { razorpay_order_id, 
-     razorpay_payment_id, 
-     razorpay_signature } = paymentData;
+             razorpay_payment_id, 
+             razorpay_signature } = paymentData;
 
      const expectedSignature = crypto.createHmac('sha256', config.razorpaySecret)
-     .update(razorpay_order_id + "|" + razorpay_payment_id)
-     .digest("hex");
+                                     .update(razorpay_order_id + "|" + razorpay_payment_id)
+                                     .digest("hex");
 
 
      return expectedSignature === razorpay_signature;

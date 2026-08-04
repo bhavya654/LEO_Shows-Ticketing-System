@@ -1,27 +1,31 @@
-import React from 'react'
-import { FaSearch, FaUser } from 'react-icons/fa'
-import mainLogo from '../../assets/Leo Shows.png'
-import { useNavigate } from 'react-router-dom'
-import { useLocation } from '../../context/LocationContext';
-import { useAuth } from '../../context/AuthContext';
-import map from "../../assets/pin.gif"
+import mainLogo from "../../assets/main-icon.png";
+import { FaSearch, FaUser } from "react-icons/fa";
+import { useLocation } from "../../context/LocationContext";
+import map from "../../assets/pin.gif";
+import { useNavigate, useParams } from "react-router-dom";
+import SignInModel from "./SignInModel";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
-    const navigate = useNavigate();
-    const {location, loading, error} = useLocation();
-    const { auth, user, toggleModal, logoutRequest } = useAuth();
 
+  const { location, loading, error } = useLocation();
+   const { toggleModal, auth, user } = useAuth();
+  const navigate = useNavigate();
   return (
     <div className="w-full text-sm bg-white">
       {/* Top Navbar */}
       <div className="px-4 md:px-8">
-        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-3">
+        <div
+          className="max-w-screen-xl mx-auto flex justify-between items-center
+            py-3"
+        >
           {/* Left Part */}
           <div className="flex items-center space-x-4">
             <img
+              onClick={() => navigate("/")}
               src={mainLogo}
               alt="logo"
-              className="h-13 object-contain"
+              className="h-8 object-contain cursor-pointer"
             />
             <div className="relative">
               <input
@@ -34,65 +38,59 @@ const Header = () => {
           </div>
           {/* Right Part */}
           <div className="flex item-center space-x-6">
-            <div className="text-sm font-medium cursor-pointer border rounded-full border-[#88856E] p-2">
-               {!location && <img src={map} alt='loading..' className='w-5 h-5' />}
-               {location && <p>{location} &nbsp; ▼</p> }
+            <div className="text-sm font-medium cursor-pointer mt-2">
+              {loading && <img src={map} alt="loading..." className="w-10 h-10" />}
+              {location && <p>{location} &nbsp; ▼</p>}
             </div>
-            <span className="cursor-pointer text-sm font-medium border rounded-full border-[#88856E] p-2">
-              <FaUser className="text-[#88856E]" />
-            </span>
-            {auth ? (
-              <>
+            {
+              auth ? (
+                  <>
+                    <span className="cursor-pointer text-sm font-medium border rounded-full border-gray-300 p-2">
+                      <FaUser className="text-gray-500" />
+                    </span>
+                    <span onClick={() => navigate(`/profile/${user?._id}/profile`)} className="text-sm -ml-3 font-normal cursor-pointer hover:text-red-500">
+                      Hi, {user ? user?.name : "Test User"} &nbsp; ▼
+                    </span>
+                  </>
+              ) : (
                 <button
-                  type="button"
-                  onClick={() => navigate(`/profile/${user?._id}/profile`)}
-                  className="text-gray-700 px-4 py-1.5 rounded text-sm border border-[#88856E] hover:bg-gray-100 transition duration-200 font-medium"
-                >
-                  Hi, {user?.name || 'User'}
-                </button>
-                <button
-                  type="button"
-                  onClick={logoutRequest}
-                  className="bg-red-500 text-white px-4 py-1.5 rounded text-sm hover:bg-red-600 transition duration-200 font-medium"
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => toggleModal()}
-                className="bg-orange-500 text-white px-4 py-1.5 rounded text-sm hover:bg-[#F8AF26]/90 transition duration-200 font-medium"
-              >
-                Sign in
-              </button>
-            )}
+              onClick={() => toggleModal()}
+              className="bg-[#f84464] cursor-pointer
+                    text-white px-4 py-1.5 rounded text-sm"
+            >
+              Sign in
+            </button>
+              )
+            }
           </div>
         </div>
       </div>
       {/* Bottom Navbar */}
-      <div className="bg-[#E9ECEF] px-4 md:px-8">
-        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-2 text-[#333333]">
+      <div className="bg-[#f2f2f2] px-4 md:px-8">
+        <div className="max-w-screen-xl mx-auto flex justify-between items-center py-2 text-gray-700">
           <div className="flex items-center space-x-6 font-medium">
-            <span className="hover:text-orange-500">Movies</span>
-            <span className="hover:text-orange-500">Stream</span>
-            <span className="hover:text-orange-500">Events</span>
-            <span className="hover:text-orange-500">Plays</span>
-            <span className="hover:text-orange-500">Sports</span>
-            <span className="hover:text-orange-500">Activities</span>
+            <span onClick={() => navigate("/movies")} className="cursor-pointer hover:text-red-500">Movies</span>
+            <span className="cursor-pointer hover:text-red-500">Stream</span>
+            <span className="cursor-pointer hover:text-red-500">Events</span>
+            <span className="cursor-pointer hover:text-red-500">Plays</span>
+            <span className="cursor-pointer hover:text-red-500">Sports</span>
+            <span className="cursor-pointer hover:text-red-500">
+              Activities
+            </span>
           </div>
 
             <div className="flex item-center space-x-6 text-sm">
-                <span className="hover:underline">ListYourShow</span>
-                <span className="hover:underline">Corporates</span>
-                <span className="hover:underline">Offers</span>
-                <span className="hover:underline">Gift Cards</span>
+                <span className="cursor-pointer hover:underline">ListYourShow</span>
+                <span className="cursor-pointer hover:underline">Corporates</span>
+                <span className="cursor-pointer hover:underline">Offers</span>
+                <span className="cursor-pointer hover:underline">Gift Cards</span>
             </div>
 
         </div>
       </div>
+      <SignInModel />
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

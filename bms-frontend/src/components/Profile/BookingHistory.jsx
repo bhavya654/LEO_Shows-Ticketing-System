@@ -17,21 +17,32 @@ const BookingHistory = () => {
 
   console.log(data?.data.bookings)
 
+  const bookings = data?.data?.bookings || [];
+
   if(isError){
     return (
       <div className="px-6 rounded-md">
-        <h3 className="text-xl font-semibold mb-4">Your Orders</h3>
+        <h3 className="text-xl font-semibold mb-4">BOOKINGS</h3>
         <p className="text-gray-500">Failed to load bookings. Please try again later.</p>
       </div>
     )
   }
 
+  if (!bookings.length) {
+    return (
+      <div className="px-6 rounded-md">
+        <h3 className="text-xl font-semibold mb-4">BOOKINGS</h3>
+        <p className="text-gray-500">No bookings till now.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="px-6 rounded-md">
-        <h3 className="text-xl font-semibold mb-4">Your Bookings</h3>
+        <h3 className="text-xl font-semibold mb-4">BOOKINGS</h3>
 
-        {data?.data?.bookings?.map((booking) => (
+        {bookings.map((booking) => (
           <>
             <div
               key={booking._id}

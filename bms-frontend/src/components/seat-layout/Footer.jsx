@@ -8,11 +8,17 @@ import toast from "react-hot-toast";
 const Footer = ({ isSelected, selectedSeats, showData, state, showId, lockedSeats }) => {
   const navigate = useNavigate();
   const { setShows } = useSeatContext();
-  const { user } = useAuth();
+  const { user, toggleModal } = useAuth();
   const locationState = state || "India";
 
   const handleNavigateToCheckout = () => {
     if (!selectedSeats?.length) return;
+
+    if (!user) {
+      toggleModal();
+      toast.error("Please sign in to continue booking.");
+      return;
+    }
 
     const currentlyLocked = Array.isArray(lockedSeats) ? lockedSeats : [];
     const unavailableSeats = selectedSeats.filter((seatId) =>

@@ -37,7 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const MovieController = __importStar(require("./movie.controller"));
+const MovieController = __importStar(require("./movie.Controller"));
 const validate_1 = require("../../middlewares/validate");
 const movie_validation_1 = require("./movie.validation");
 const router = express_1.default.Router();
